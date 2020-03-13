@@ -13,19 +13,21 @@ app.context.failSend = Send.failSend;
 app.use(bodyParser());
 
 app.use(async (ctx, next) => {
-	let noLogin = ['/api/admin/login', '/api/admin/logout'];
+    let noLogin = ['/api/admin/login', '/api/admin/logout'];
     const { token } = ctx.header;
-	const { path } = ctx.request;
-	let loginUser = token && jwt.decode(token);
-	if(!noLogin.includes(path)){
-		if(loginUser){
-			app.context.loginUser = loginUser;
-			await next();
-		}else {
-			ctx.body = ctx.failSend(-401);
-			console.log(401);
-		}
-	}
+    const { path } = ctx.request;
+    let loginUser = token && jwt.decode(token);
+    if (!noLogin.includes(path)) {
+        if (loginUser) {
+            app.context.loginUser = loginUser;
+            await next();
+        } else {
+            ctx.body = ctx.failSend(-401);
+            console.log(401);
+        }
+    } else {
+        await next();
+    }
 });
 
 // 加载路由中间件
@@ -40,7 +42,7 @@ app.use(ctx => {
 });
 
 app.on('error', (err, ctx) => {
-	console.log('app error: ',err)
+    console.log('app error: ', err)
     ctx.status = 500;
     ctx.body = {
         status: -500,
