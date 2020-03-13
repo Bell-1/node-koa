@@ -4,8 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "cross-env NODE_ENV=development nodemon --harmony app.js",
-    "server": "nodemon --exec babel-node index.js"
+    "start": "cross-env NODE_ENV=development nodemon --harmony  app.js",
+    "server": "nodemon --exec babel-node --experimental-modules index.js"
   },
   "keywords": [],
   "author": "",

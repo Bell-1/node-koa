@@ -27,7 +27,7 @@ function createAdmin(data) {
 		const newAdmin = new adminModel(adminData);
 
 		newAdmin.save(async (err) => {
-			if (err) reject();
+			if (err) return reject();
 			const info = await findAdmin(data)
 			resolve(info);
 		});
@@ -37,21 +37,21 @@ function createAdmin(data) {
 admin.post('/login', async (ctx) => {
 	const body = ctx.request.body;
 	if (!body.name && !body.phone) {
-		ctx.body = ctx.failSend(null, "-100001");
+		ctx.body = ctx.failSend("-100001");
 		return
 	}
 	if (!body.pwd) {
-		ctx.body = ctx.failSend(null, "-100002");
+		ctx.body = ctx.failSend("-100002");
 		return
 	}
 	try {
 		const info = await findAdmin(body);
 		if (!info) {
-			ctx.body = ctx.failSend(null, "-100005");
+			ctx.body = ctx.failSend("-100005");
 			return
 		}
 		if (info.pwd !== md5(body.pwd + config.pwdSecret)) {
-			ctx.body = ctx.failSend(null, "-100007");
+			ctx.body = ctx.failSend("-100007");
 			return
 		}
 		// info.pwd = undefined;
@@ -68,25 +68,25 @@ admin.post('/login', async (ctx) => {
 admin.post('/register', async (ctx) => {
 	const body = ctx.request.body;
 	if (!body.name) {
-		ctx.body = ctx.failSend(null, "-100001");
+		ctx.body = ctx.failSend("-100001");
 		return
 	}
 	if (!body.phone) {
-		ctx.body = ctx.failSend(null, "-100002");
+		ctx.body = ctx.failSend("-100002");
 		return
 	}
 	if (!body.email) {
-		ctx.body = ctx.failSend(null, "-100003");
+		ctx.body = ctx.failSend("-100003");
 		return
 	}
 	if (!body.pwd) {
-		ctx.body = ctx.failSend(null, "-100004");
+		ctx.body = ctx.failSend("-100004");
 		return
 	}
 	try {
 		const has = await findAdmin(body);
 		if (has) {
-			ctx.body = ctx.failSend(null, "-100006");
+			ctx.body = ctx.failSend("-100006");
 			return
 		}
 		const info = await createAdmin(body);
