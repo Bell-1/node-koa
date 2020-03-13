@@ -29,17 +29,17 @@ function findUser(condition) {
 function validateCreate(body, ctx) {
     const { _id } = ctx.loginUser;
     if (!body.name) {
-        ctx.body = ctx.failSend("-100001");
+        ctx.body = ctx.failSend(-100001);
         throw new Error('用户名不能为空')
     }
 
     if (!body.phone) {
-        ctx.body = ctx.failSend("-100002");
+        ctx.body = ctx.failSend(-100002);
         throw new Error('手机号不能为空')
     }
 
     if (!body.email) {
-        ctx.body = ctx.failSend("-100003");
+        ctx.body = ctx.failSend(-100003);
         throw new Error('邮箱不能为空')
     }
     const info = {
@@ -73,7 +73,7 @@ user.get('/list', async (ctx) => {
         ctx.body = ctx.successSend(data, '获取成功');
     } catch (error) {
         console.log(error);
-        ctx.body = ctx.failSend('-400');
+        ctx.body = ctx.failSend(-500);
     }
 })
 
@@ -84,11 +84,11 @@ function hasUser({ name, phone, email }, ctx) {
             code;
         try {
             if (await findOne({ name, pid: _id })) {
-                code = '-100009';
+                code = -100009;
             } else if (await findOne({ phone, pid: _id })) {
-                code = '-1000010';
+                code = -1000010;
             } else if (await findOne({ email, pid: _id })) {
-                code = '-1000011';
+                code = -1000011;
             }
             resolve(code);
         } catch (error) {
@@ -112,7 +112,7 @@ user.post('/create', async (ctx) => {
         console.log('success')
         ctx.body = ctx.successSend({}, '创建用户成功');
     } catch (error) {
-        ctx.body = ctx.failSend('-500');
+        ctx.body = ctx.failSend();
         console.log('create user: ', error)
     }
 })
@@ -148,7 +148,7 @@ user.get('/info', async (ctx) => {
         if (user) {
             ctx.body = ctx.successSend(user, '创建用户成功');
         } else {
-            ctx.body = ctx.failSend('-100008');
+            ctx.body = ctx.failSend(-100008);
         }
     } catch (error) {
         console.log('user info:', error);
@@ -168,7 +168,7 @@ user.delete('/del', async (ctx) => {
     try {
         const { _id } = ctx.request.body;
         if (!_id) {
-            ctx.body = ctx.failSend('-100008');
+            ctx.body = ctx.failSend(-100008);
             return;
         }
         await delUser({ _id });

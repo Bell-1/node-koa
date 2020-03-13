@@ -20,12 +20,12 @@ app.use(async (ctx, next) => {
 	if(!noLogin.includes(path)){
 		if(loginUser){
 			app.context.loginUser = loginUser;
-			console.log('set')
+			await next();
 		}else {
-			ctx.body = ctx.failSend("-401");
+			ctx.body = ctx.failSend(-401);
+			console.log(401);
 		}
 	}
-	await next();
 });
 
 // 加载路由中间件
