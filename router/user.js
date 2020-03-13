@@ -27,7 +27,7 @@ function findUser(condition) {
 }
 
 function validateCreate(body, ctx) {
-
+    const { _id } = ctx.loginUser;
     if (!body.name) {
         ctx.body = ctx.failSend("-100001");
         throw new Error('用户名不能为空')
@@ -48,7 +48,7 @@ function validateCreate(body, ctx) {
         email: body.email,
         gender: body.gender || 1,
         pwd: body.pwd,
-        pid: body.pid,
+        pid: _id,
         status: 1,
     };
 
@@ -67,8 +67,9 @@ function createUser(info) {
 
 user.get('/list', async (ctx) => {
     try {
+        const { _id } = ctx.loginUser;
         const condition = validateQueryCondition(ctx.query);
-        const data = await findUser(condition);
+        const data = await findUser({ ...condition, pid: _id });
         ctx.body = ctx.successSend(data, '获取成功');
     } catch (error) {
         console.log(error);
@@ -76,16 +77,17 @@ user.get('/list', async (ctx) => {
     }
 })
 
-function hasUser({ name, phone, email, pid }, ctx) {
+function hasUser({ name, phone, email }, ctx) {
     return new Promise(async (resolve, reject) => {
+        const { _id } = ctx.loginUser;
         let has = null,
             code;
         try {
-            if (await findOne({ name, pid })) {
+            if (await findOne({ name, pid: _id })) {
                 code = '-100009';
-            } else if (await findOne({ phone, pid })) {
+            } else if (await findOne({ phone, pid: _id })) {
                 code = '-1000010';
-            } else if (await findOne({ email, pid })) {
+            } else if (await findOne({ email, pid: _id })) {
                 code = '-1000011';
             }
             resolve(code);
