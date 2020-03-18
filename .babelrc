@@ -1,8 +1,9 @@
 {
-  	"presets": ["@babel/preset-env", "@babel/preset-stage-3"],
+  	"presets": ["@babel/preset-env"],
   	"plugins": [
-  		"transform-async-to-generator",
-        "transform-es2015-modules-commonjs",
-        "transform-export-extensions"
+  		"@babel/plugin-transform-async-to-generator",
+		"@babel/plugin-transform-modules-commonjs",
+		"@babel/plugin-proposal-export-default-from",
+        "@babel/plugin-proposal-export-namespace-from"
     ]
 }
