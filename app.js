@@ -1,4 +1,4 @@
-import Koa from 'Koa'
+import Koa from 'koa'
 import router from './router'
 import bodyParser from 'koa-bodyParser'
 import mongoDB from './mongodb/db'
