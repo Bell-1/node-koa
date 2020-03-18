@@ -1,6 +1,6 @@
 import Koa from 'koa'
 import router from './router'
-import bodyParser from 'koa-bodyParser'
+import bodyParser from 'koa-bodyparser'
 import mongoDB from './mongodb/db'
 const Send = require('./res/genSend')
 const jwt = require('jsonwebtoken');
