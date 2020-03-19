@@ -16,8 +16,10 @@ function findAdmin(data) {
     return new Promise((resolve, reject) => {
         adminModel.findOne({ phone: data.phone }, function(err, userInfo) {
             if (err) return reject(err);
-            userInfo = userInfo.toObject();
-            userInfo.token = genToken(userInfo);
+            if (userInfo) {
+                userInfo = userInfo.toObject();
+                userInfo.token = genToken(userInfo);
+            }
             resolve(userInfo)
         });
     })
@@ -60,13 +62,12 @@ const login = async (ctx) => {
             ctx.body = ctx.failSend(-100005);
             return
         }
-        console.log(info, md5(body.pwd + config.pwdSecret))
         if (info.pwd !== md5(body.pwd + config.pwdSecret)) {
             //密码验证
             ctx.body = ctx.failSend(-100007);
             return
-		}
-		delete info.pwd;
+        }
+        delete info.pwd;
         ctx.body = ctx.successSend(info, '登陆成功');
     } catch (error) {
         console.log(error);

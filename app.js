@@ -13,7 +13,7 @@ app.context.failSend = Send.failSend;
 app.use(bodyParser());
 
 app.use(async (ctx, next) => {
-    let noLogin = ['/api/admin/login', '/api/admin/logout', '/api/weather'];
+    let noLogin = ['/api/admin', '/api/weather'];
     const { token } = ctx.header;
     const { path } = ctx.request;
     let loginUser = token && jwt.decode(token);
