@@ -13,15 +13,16 @@ app.context.failSend = Send.failSend;
 app.use(bodyParser());
 
 app.use(async (ctx, next) => {
-    let noLogin = ['/api/admin/login', '/api/admin/logout'];
+    let noLogin = ['/api/admin/login', '/api/admin/logout', '/api/weather'];
     const { token } = ctx.header;
     const { path } = ctx.request;
     let loginUser = token && jwt.decode(token);
-    if (!noLogin.includes(path)) {
+    if (!noLogin.some(item => path.indexOf(item) === 0 )) {
         if (loginUser) {
             app.context.loginUser = loginUser;
             await next();
         } else {
+            console.log(loginUser);
             ctx.body = ctx.failSend(-401);
             console.log(401);
         }

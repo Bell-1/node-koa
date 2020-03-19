@@ -1,5 +1,4 @@
 import userModal from '../../model/userModal'
-import mongoose from 'mongoose'
 
 function validateQueryCondition(query) {
     let condition = {};
@@ -148,7 +147,7 @@ const createUser = async (ctx) => {
             ctx.body = ctx.failSend(code);
             return;
         }
-        await create({...info, pid});
+        await create({ ...info, pid });
         console.log('success')
         ctx.body = ctx.successSend({}, '创建用户成功');
     } catch (error) {

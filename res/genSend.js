@@ -8,10 +8,11 @@ function successSend(data, msg){
 	}
 }
 
-function failSend(code = -500, msg = ''){
+function failSend(code = -500, data){
 	return {
 		code,
-		msg: msg || errStatus[code] || ''
+		msg: errStatus[code] || '',
+		data,
 	}
 }
 
