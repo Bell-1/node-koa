@@ -22,9 +22,7 @@ app.use(async (ctx, next) => {
             app.context.loginUser = loginUser;
             await next();
         } else {
-            console.log(loginUser);
             ctx.body = ctx.failSend(-401);
-            console.log(401);
         }
     } else {
         await next();

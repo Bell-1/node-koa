@@ -1,23 +1,42 @@
 import userModal from '../../model/userModal'
 
 function validateQueryCondition(query) {
-    let condition = {};
-    return condition
+    const { name, phone, email } = query
+    let condition = [];
+    if (name) {
+        condition.push({ name: new RegExp(name) })
+    }
+    if (phone) {
+        condition.push({ phone: new RegExp(phone) })
+    }
+    if (email) {
+        condition.push({ email: new RegExp(email) })
+    }
+    console.log(condition)
+    return condition.length ? {
+        $or: condition,
+    } : {}
 }
 
-function findList(condition) {
+function findList(condition, { page = 1, pageSize = 10, pid } = filter) {
     return new Promise((resolve, reject) => {
-        userModal.find(condition, function(err, list) {
-            if (err) return reject(err);
-            const page = 1;
-            const totalPage = 2;
-            const size = 10;
-            resolve({
-                list,
-                page,
-                totalPage,
-                size
-            });
+        console.log('condition', condition)
+        userModal.count({ ...condition, pid }, function(err, count) {
+            if (err) return reject;
+            console.log('count', count)
+            const totalPage = Math.ceil(count / pageSize);
+            if (page > totalPage) page = totalPage;
+            userModal.find({ ...condition, pid })
+                .skip((page - 1) * pageSize)
+                .limit(+pageSize)
+                .exec(function(err, list) {
+                    if (err) return reject(err);
+                    resolve({
+                        list,
+                        page: +page,
+                        totalPage,
+                    });
+                })
         });
     })
 }
@@ -125,7 +144,8 @@ const fetchUserList = async (ctx) => {
     try {
         const { _id } = ctx.loginUser;
         const condition = validateQueryCondition(ctx.query);
-        const data = await findList({ ...condition, pid: _id });
+        const { page = 1, pageSize = 10 } = ctx.query;
+        const data = await findList({ ...condition }, { page, pageSize, pid: _id });
         ctx.body = ctx.successSend(data, '获取成功');
     } catch (error) {
         console.log(error);
