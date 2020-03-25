@@ -23,7 +23,15 @@ function findList(condition, { page = 1, pageSize = 10, pid } = filter) {
         console.log('condition', condition)
         userModal.count({ ...condition, pid }, function(err, count) {
             if (err) return reject;
-            console.log('count', count)
+            if(count === 0){
+                //没有数据
+                resolve({
+                    list: [],
+                    page: 1,
+                    totalPage: 1,
+                })
+                return;
+            }
             const totalPage = Math.ceil(count / pageSize);
             if (page > totalPage) page = totalPage;
             userModal.find({ ...condition, pid })
