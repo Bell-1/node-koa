@@ -12,7 +12,6 @@ function validateQueryCondition(query) {
     if (email) {
         condition.push({ email: new RegExp(email) })
     }
-    console.log(condition)
     return condition.length ? {
         $or: condition,
     } : {}
@@ -20,10 +19,9 @@ function validateQueryCondition(query) {
 
 function findList(condition, { page = 1, pageSize = 10, pid } = filter) {
     return new Promise((resolve, reject) => {
-        console.log('condition', condition)
         userModal.count({ ...condition, pid }, function(err, count) {
             if (err) return reject;
-            if(count === 0){
+            if (count === 0) {
                 //没有数据
                 resolve({
                     list: [],
@@ -51,19 +49,24 @@ function findList(condition, { page = 1, pageSize = 10, pid } = filter) {
 
 function validateUserInfo(body, ctx) {
     const { _id, name, phone, email, gender = 1, pwd, status = 1, } = body;
-    if (!body.name) {
+    console.log(pwd)
+    if (!name) {
         ctx.body = ctx.failSend(-100001);
-        throw new Error('用户名不能为空')
+        throw new Error('用户名不能为空');
     }
 
-    if (!body.phone) {
+    if (!phone) {
         ctx.body = ctx.failSend(-100002);
-        throw new Error('手机号不能为空')
+        throw new Error('手机号不能为空');
     }
 
-    if (!body.email) {
+    if (!email) {
         ctx.body = ctx.failSend(-100003);
-        throw new Error('邮箱不能为空')
+        throw new Error('邮箱不能为空');
+    }
+    if (!pwd || pwd.length < 6 || pwd.length > 32) {
+        ctx.body = ctx.failSend(-100004);
+        throw new Error('密码不能为空');
     }
     const info = { _id, name, phone, email, gender, pwd, status };
 
@@ -81,10 +84,8 @@ function create(info) {
 
 function update({ _id, ...info }) {
     return new Promise(async (resovle, reject) => {
-        console.log('update find  ', await findOne({ _id }))
         userModal.updateOne({ _id }, info, {}, (err, info) => {
             if (err) return reject(err);
-            console.log('info', info);
             resovle(info);
         });
     })
@@ -94,20 +95,20 @@ function update({ _id, ...info }) {
 function hasUser({ name, phone, email }, ctx) {
     return new Promise(async (resolve, reject) => {
         const { _id } = ctx.loginUser;
-        let has = null,
-            code;
-        try {
-            if (await findOne({ name, pid: _id })) {
-                code = -100009;
-            } else if (await findOne({ phone, pid: _id })) {
-                code = -1000010;
-            } else if (await findOne({ email, pid: _id })) {
-                code = -1000011;
-            }
-            resolve(code);
-        } catch (error) {
-            reject(error)
+        if (await findOne({ name, pid: _id })) {
+            ctx.body = ctx.failSend(-100009);
+            reject();
+            throw new Error('用户名已存在');
+        } else if (await findOne({ phone, pid: _id })) {
+            ctx.body = ctx.failSend(-1000010);
+            reject();
+            throw new Error('手机号已存在');
+        } else if (await findOne({ email, pid: _id })) {
+            ctx.body = ctx.failSend(-1000011);
+            reject();
+            throw new Error('邮箱已存在');
         }
+        resolve();
     })
 }
 
@@ -156,8 +157,7 @@ const fetchUserList = async (ctx) => {
         const data = await findList({ ...condition }, { page, pageSize, pid: _id });
         ctx.body = ctx.successSend(data, '获取成功');
     } catch (error) {
-        console.log(error);
-        ctx.body = ctx.failSend(-500);
+        ctx.body = ctx.failSend();
     }
 }
 
@@ -167,20 +167,18 @@ const fetchUserList = async (ctx) => {
  */
 const createUser = async (ctx) => {
     const body = ctx.request.body;
+    const pid = ctx.loginUser._id;
     try {
-        const info = await validateUserInfo(body, ctx);
-        const pid = ctx.loginUser._id;
-        const code = await hasUser({ info, pid }, ctx);
-        if (code) {
-            ctx.body = ctx.failSend(code);
-            return;
-        }
+        const info = validateUserInfo(body, ctx);
+        await hasUser({ info, pid }, ctx);
+    } catch (error) {
+        return
+    }
+    try {
         await create({ ...info, pid });
-        console.log('success')
         ctx.body = ctx.successSend({}, '创建用户成功');
     } catch (error) {
         ctx.body = ctx.failSend();
-        console.log('create user: ', error)
     }
 }
 
@@ -192,8 +190,7 @@ const createUser = async (ctx) => {
 const editUser = async (ctx) => {
     const body = ctx.request.body;
     try {
-        const info = await validateUserInfo(body, ctx);
-        const { _id, name, phone, email } = info;
+        const info = validateUserInfo(body, ctx);
         await update(info);
         ctx.body = ctx.successSend({}, '修改用户成功');
     } catch (error) {
