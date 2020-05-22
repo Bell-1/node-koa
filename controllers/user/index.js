@@ -49,7 +49,6 @@ function findList(condition, { page = 1, pageSize = 10, pid } = filter) {
 
 function validateUserInfo(body, ctx) {
     const { _id, name, phone, email, gender = 1, pwd, status = 1, } = body;
-    console.log(pwd)
     if (!name) {
         ctx.body = ctx.failSend(-100001);
         throw new Error('用户名不能为空');
@@ -68,8 +67,15 @@ function validateUserInfo(body, ctx) {
         ctx.body = ctx.failSend(-100004);
         throw new Error('密码不能为空');
     }
-    const info = { _id, name, phone, email, gender, pwd, status };
-
+    let info = {
+        name,
+        phone,
+        email,
+        gender,
+        pwd,
+        status
+    };
+    if (_id) { info._id = _id }
     return info
 }
 
@@ -168,8 +174,9 @@ const fetchUserList = async (ctx) => {
 const createUser = async (ctx) => {
     const body = ctx.request.body;
     const pid = ctx.loginUser._id;
+    let info = null;
     try {
-        const info = validateUserInfo(body, ctx);
+        info = validateUserInfo(body, ctx);
         await hasUser({ info, pid }, ctx);
     } catch (error) {
         return
@@ -178,6 +185,7 @@ const createUser = async (ctx) => {
         await create({ ...info, pid });
         ctx.body = ctx.successSend({}, '创建用户成功');
     } catch (error) {
+        console.error('create', error)
         ctx.body = ctx.failSend();
     }
 }
