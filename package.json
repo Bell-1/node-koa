@@ -4,7 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "serve": "cross-env NODE_ENV=development nodemon --harmony  index.js"
+    "start": "npm run dev",
+    "dev": "cross-env NODE_ENV=development nodemon --harmony  index.js",
+    "serve": "cross-env NODE_ENV=production nodemon --harmony  index.js"
   },
   "keywords": [],
   "author": "",
@@ -24,6 +26,7 @@
   },
   "devDependencies": {
     "@babel/cli": "^7.8.4",
+    "@babel/compat-data": "^7.10.3",
     "@babel/core": "^7.8.7",
     "@babel/plugin-proposal-export-default-from": "^7.8.3",
     "@babel/plugin-proposal-export-namespace-from": "^7.8.3",
