@@ -14,7 +14,7 @@ function genToken(info = {}) {
 
 function findAdmin(data) {
     return new Promise((resolve, reject) => {
-        adminModel.findOne({ phone: data.phone }, function(err, userInfo) {
+        adminModel.findOne({ phone: data.phone }, function (err, userInfo) {
             if (err) return reject(err);
             if (userInfo) {
                 userInfo = userInfo.toObject();
@@ -70,7 +70,7 @@ const login = async (ctx) => {
         delete info.pwd;
         ctx.body = ctx.successSend(info, '登陆成功');
     } catch (error) {
-        console.log(error);
+        console.log('login error', error);
         ctx.req.status = 500;
     }
 
@@ -103,7 +103,7 @@ const register = async (ctx) => {
         const info = await createAdmin(body);
         ctx.body = ctx.successSend(info, '注册成功');
     } catch (error) {
-        console.log(error);
+        console.log('error error', error);
         ctx.req.status = 500;
     }
 

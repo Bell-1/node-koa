@@ -40,7 +40,7 @@ export async function getCatalog(ctx) {
         const catalog = disposeHtml(html, mainEl);
         ctx.body = ctx.successSend(catalog, '获取目录');
     } catch (error) {
-        console.log(error);
+        console.log('get catalog error: ', error);
         ctx.req.status = 500;
         ctx.body = ctx.failSend();
     }

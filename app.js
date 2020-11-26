@@ -17,7 +17,7 @@ app.use(async (ctx, next) => {
     const { token } = ctx.header;
     const { path } = ctx.request;
     let loginUser = token && jwt.decode(token);
-    if (!noLogin.some(item => path.indexOf(item) === 0 )) {
+    if (!noLogin.some(item => path.indexOf(item) === 0)) {
         if (loginUser) {
             app.context.loginUser = loginUser;
             await next();
@@ -40,7 +40,7 @@ app.use(ctx => {
     }
 });
 
-app.on('error', (err, ctx) => {
+app.on('error', err => {
     console.log('app error: ', err)
     ctx.status = 500;
     ctx.body = {
@@ -49,7 +49,9 @@ app.on('error', (err, ctx) => {
     }
 });
 
+function startListen(port = config.port) {
+    app.listen(port);
+    console.log(`[node-koa] start-quick is starting at port ${config.port}`);
+}
 
-app.listen(config.port);
-
-console.log(`[node-koa] start-quick is starting at port ${config.port}`);
+startListen();
