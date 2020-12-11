@@ -1,4 +1,4 @@
-import adminModel from '../../model/adminModel'
+import adminModel from '../../models/admin'
 import md5 from 'md5'
 import jwt from 'jsonwebtoken'
 const config = require('config-lite')(__dirname);

@@ -2,7 +2,7 @@
 
 module.exports = {
 	port: parseInt(process.env.PORT, 10) || 3333,
-	url: 'mongodb://localhost:27017/belldb',
+	dbs: 'mongodb://localhost:27017/belldb',
 	session: {
 		name: 'SID',
 		secret: 'SID',

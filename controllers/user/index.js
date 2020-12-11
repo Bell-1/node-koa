@@ -1,4 +1,4 @@
-import userModal from '../../model/userModal'
+import userModal from '../../models/user'
 
 function validateQueryCondition(query) {
     const { name, phone, email } = query

@@ -6,7 +6,7 @@ const config = require('config-lite')(__dirname);
 let status = 'closed'; // closed opened error
 let openedCallBack = []; // 连接成功回调
 
-mongoose.connect(config.url, {
+mongoose.connect(config.dbs, {
 	useNewUrlParser: true
 });
 mongoose.Promise = global.Promise;
@@ -28,7 +28,7 @@ db.on('error', function (error) {
 db.on('close', function () {
 	status = 'closed';
 	console.log(chalk.red('数据库断开，重新连接数据库'));
-	mongoose.connect(config.url, {
+	mongoose.connect(config.dbs, {
 		server: {
 			auto_reconnect: true
 		}

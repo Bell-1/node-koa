@@ -1,38 +1,33 @@
 import Koa from 'koa'
-import router from './router'
+import onerror from 'koa-onerror'
 import bodyParser from 'koa-bodyparser'
+import router from './router'
 import mongoDB from './mongodb/db'
 const Send = require('./res/genSend')
 const jwt = require('jsonwebtoken');
 const config = require('config-lite')(__dirname);
 const app = new Koa();
 
+
+onerror(app);
+
+function checkLogin(...arg) {
+    const { token } = this.request.header;
+    let loginUser = token && jwt.decode(token);
+    return !!loginUser
+}
+
 app.context.db = mongoDB.db;
 app.context.successSend = Send.successSend;
 app.context.failSend = Send.failSend;
+app.context.checkLogin = checkLogin;
 app.use(bodyParser());
-
-app.use(async (ctx, next) => {
-    let noLogin = ['/api/admin', '/api/weather'];
-    const { token } = ctx.header;
-    const { path } = ctx.request;
-    let loginUser = token && jwt.decode(token);
-    if (!noLogin.some(item => path.indexOf(item) === 0)) {
-        if (loginUser) {
-            app.context.loginUser = loginUser;
-            await next();
-        } else {
-            ctx.body = ctx.failSend(-401);
-        }
-    } else {
-        await next();
-    }
-});
 
 // 加载路由中间件
 app.use(router.routes()).use(router.allowedMethods());
 
 app.use(ctx => {
+    console.log(ctx.request.path)
     ctx.status = 404;
     ctx.body = {
         status: 404,

@@ -3555,6 +3555,14 @@ koa-convert@^1.2.0:
     co "^4.6.0"
     koa-compose "^3.0.0"
 
+koa-onerror@^4.1.0:
+  version "4.1.0"
+  resolved "https://registry.npmjs.org/koa-onerror/-/koa-onerror-4.1.0.tgz#7949c7651941e67b11813bf1fad03c2d34470b1c"
+  integrity sha512-UDvOkkXiyVtlhRIvo9wbqKG/pTiiVE5x2uIFpG5e6OmBawxBSURG/PeFa6e6UZjjxinXde3BmPWVSIVePMG6TA==
+  dependencies:
+    escape-html "^1.0.3"
+    stream-wormhole "^1.1.0"
+
 koa-webpack@^5.3.0:
   version "5.3.0"
   resolved "https://registry.npmjs.org/koa-webpack/-/koa-webpack-5.3.0.tgz#b95bd83283ff665088f0ebdd10d47fc6857a9cbc"
@@ -5138,6 +5146,11 @@ stream-shift@^1.0.0:
   version "1.0.1"
   resolved "https://registry.npmjs.org/stream-shift/-/stream-shift-1.0.1.tgz#d7088281559ab2778424279b0877da3c392d5a3d"
   integrity sha512-AiisoFqQ0vbGcZgQPY1cdP2I76glaVA/RauYR4G4thNFgkTqr90yXTo4LYX60Jl+sIlPNHHdGSwo01AvbKUSVQ==
+
+stream-wormhole@^1.1.0:
+  version "1.1.0"
+  resolved "https://registry.npmjs.org/stream-wormhole/-/stream-wormhole-1.1.0.tgz#300aff46ced553cfec642a05251885417693c33d"
+  integrity sha512-gHFfL3px0Kctd6Po0M8TzEvt3De/xu6cnRrjlfYNhwbhLPLwigI2t1nc6jrzNuaYg5C4YF78PPFuQPzRiqn9ew==
 
 streamroller@0.7.0:
   version "0.7.0"
