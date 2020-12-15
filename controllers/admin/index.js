@@ -12,7 +12,7 @@ function genToken(info = {}) {
 }
 
 
-function findAdmin(data) {
+export function findAdmin(data) {
     return new Promise((resolve, reject) => {
         adminModel.findOne({ phone: data.phone }, function (err, userInfo) {
             if (err) return reject(err);
@@ -26,7 +26,7 @@ function findAdmin(data) {
 }
 
 
-function createAdmin(data) {
+export function createAdmin(data) {
     return new Promise((resolve, reject) => {
         const adminData = {
             name: data.name,
@@ -43,82 +43,4 @@ function createAdmin(data) {
             resolve(info);
         });
     })
-}
-
-const login = async (ctx) => {
-    const body = ctx.request.body;
-    if (!body.name && !body.phone) {
-        ctx.body = ctx.failSend(-100001);
-        return
-    }
-    if (!body.pwd) {
-        ctx.body = ctx.failSend(-100002);
-        return
-    }
-    try {
-        let info = await findAdmin(body);
-        if (!info) {
-            //没有此有用户
-            ctx.body = ctx.failSend(-100005);
-            return
-        }
-        if (info.pwd !== md5(body.pwd + config.pwdSecret)) {
-            //密码验证
-            ctx.body = ctx.failSend(-100007);
-            return
-        }
-        delete info.pwd;
-        ctx.body = ctx.successSend(info, '登陆成功');
-    } catch (error) {
-        console.log('login error', error);
-        ctx.req.status = 500;
-    }
-
-}
-
-const register = async (ctx) => {
-    const body = ctx.request.body;
-    if (!body.name) {
-        ctx.body = ctx.failSend(-100001);
-        return
-    }
-    if (!body.phone) {
-        ctx.body = ctx.failSend(-100002);
-        return
-    }
-    if (!body.email) {
-        ctx.body = ctx.failSend(-100003);
-        return
-    }
-    if (!body.pwd) {
-        ctx.body = ctx.failSend(-100004);
-        return
-    }
-    try {
-        const has = await findAdmin(body);
-        if (has) {
-            ctx.body = ctx.failSend(-100006);
-            return
-        }
-        const info = await createAdmin(body);
-        ctx.body = ctx.successSend(info, '注册成功');
-    } catch (error) {
-        console.log('error error', error);
-        ctx.req.status = 500;
-    }
-
-}
-
-const logout = async ctx => { ctx.body = ctx.successSend('已退出') }
-
-const userInfo = async ctx => {
-    const userInfo = await findAdmin(ctx.loginUser);
-    ctx.body = ctx.successSend(userInfo);
-}
-
-module.exports = {
-    login,
-    register,
-    logout,
-    userInfo,
 }
