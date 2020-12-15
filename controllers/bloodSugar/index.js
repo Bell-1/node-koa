@@ -44,12 +44,9 @@ export async function update(_id, data) {
 }
 
 
-export function del(body) {
+export function del(_id) {
     return new Promise((resolve, reject) => {
-        const data = {
-            _id: body.id,
-        }
-        bloodSugarModel.deleteOne(data, async err => {
+        bloodSugarModel.deleteOne({ _id }, async err => {
             if (err) return reject();
             resolve();
         });

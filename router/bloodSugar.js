@@ -14,17 +14,19 @@ bloodSugar.get('/', async ctx => {
     }
 })
 
-bloodSugar.get('/change', async ctx => {
+bloodSugar.put('/', async ctx => {
     try {
-		const {list} = await findList({});
-        for (let v of list) {
-            ++v.type;
-            await update(v._id, v)
+		const body = ctx.request.body;
+		const data ={
+			time: body.time,
+			type: body.type,
+			value: body.value,
 		}
-		ctx.successSend(list, 'sss')
+        const res = await update(body._id, data)
+        ctx.successSend(null, '修改成功')
     } catch (err) {
-		console.log(111, err)
-	}
+        console.log(111, err)
+    }
 })
 
 bloodSugar.post('/', async ctx => {
@@ -39,15 +41,14 @@ bloodSugar.post('/', async ctx => {
 })
 
 
-// bloodSugar.put('', bloodsugar)
 bloodSugar.delete('/', async ctx => {
     const body = ctx.request.body;
     try {
-        if (!body.id) {
+        if (!body._id) {
             ctx.body = ctx.failSend(-1000014);
             return
         }
-        await del(body);
+        await del(body._id);
         ctx.body = ctx.successSend(null, '删除成功');
     } catch (error) {
         console.log(error)
