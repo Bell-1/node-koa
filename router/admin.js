@@ -1,6 +1,7 @@
 import Router from '@koa/router'
 import { findAdmin, logout, createAdmin, userInfo } from '../controllers/admin/index'
-
+import md5 from 'md5'
+const config = require('config-lite')(__dirname);
 const admin = new Router();
 
 admin.post('/login', async (ctx) => {
