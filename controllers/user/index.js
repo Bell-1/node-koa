@@ -98,9 +98,9 @@ function update({ _id, ...info }) {
 }
 
 
-function hasUser({ name, phone, email }, ctx) {
+function hasUser({ name, phone, email }, userInfo, ctx) {
     return new Promise(async (resolve, reject) => {
-        const { _id } = ctx.userInfo;
+        const { _id } = userInfo;
         if (await findOne({ name, pid: _id })) {
             ctx.body = ctx.failSend(-100009);
             reject();
@@ -181,7 +181,7 @@ const createUser = async (ctx) => {
     let info = null;
     try {
         info = validateUserInfo(body, ctx);
-        await hasUser({ info, pid }, ctx);
+        await hasUser({ info, pid }, userInfo, ctx);
     } catch (error) {
         return
     }

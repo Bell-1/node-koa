@@ -71,12 +71,10 @@ admin.post('/register', async (ctx) => {
 admin.post('/logout', async ctx => { ctx.successSend('已退出') })
 
 admin.get('/info', async ctx => {
-    try {
-		const userInfo = await findAdmin(ctx.userInfo);
-        ctx.successSend(userInfo);
-    } catch (error) {
-        ctx.failSend(userInfo);
-	}
+    ctx.successSend(userInfo);
+    // const userInfo = ctx.provingToken(ctx.request);
+    // if (!userInfo) return;
+    // const userInfo = await findAdmin(ctx.userInfo);
 })
 
 module.exports = admin
