@@ -13,7 +13,7 @@ const app = new Koa();
 function provingToken(req) {
     const { token } = req.header;
     if (token) {
-        console.log(token)
+        console.log(token, jwt.decode(token))
         return jwt.decode(token);
     } else {
         ctx.failSend(-401);
