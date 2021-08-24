@@ -10,16 +10,19 @@ const app = new Koa();
 
 
 
-function checkLogin(...arg) {
-	const { token } = this.request.header;
-    let loginUser = token && jwt.decode(token);
-    return !!loginUser
+function provingToken(req) {
+    const { token } = req.header;
+    if (token) {
+        return userInfo = token && jwt.decode(token);
+    } else {
+        ctx.failSend(-401);
+    }
 }
 
 app.context.db = mongoDB.db;
 app.context.successSend = Send.successSend;
 app.context.failSend = Send.failSend;
-app.context.checkLogin = checkLogin;
+app.context.provingToken = provingToken;
 
 app.use(bodyParser());
 

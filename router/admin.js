@@ -72,7 +72,7 @@ admin.post('/logout', async ctx => { ctx.successSend('已退出') })
 
 admin.get('/info', async ctx => {
     try {
-		const userInfo = await findAdmin(ctx.loginUser);
+		const userInfo = await findAdmin(ctx.userInfo);
         ctx.successSend(userInfo);
     } catch (error) {
         ctx.failSend(userInfo);

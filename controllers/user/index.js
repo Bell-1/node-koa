@@ -100,7 +100,7 @@ function update({ _id, ...info }) {
 
 function hasUser({ name, phone, email }, ctx) {
     return new Promise(async (resolve, reject) => {
-        const { _id } = ctx.loginUser;
+        const { _id } = ctx.userInfo;
         if (await findOne({ name, pid: _id })) {
             ctx.body = ctx.failSend(-100009);
             reject();
@@ -157,7 +157,9 @@ function del(condition) {
  */
 const fetchUserList = async (ctx) => {
     try {
-        const { _id } = ctx.loginUser;
+        const userInfo = ctx.provingToken(ctx.request);
+        if (!userInfo) return;
+        const { _id } = userInfo;
         const condition = validateQueryCondition(ctx.query);
         const { page = 1, pageSize = 10 } = ctx.query;
         const data = await findList({ ...condition }, { page, pageSize, pid: _id });
@@ -173,7 +175,9 @@ const fetchUserList = async (ctx) => {
  */
 const createUser = async (ctx) => {
     const body = ctx.request.body;
-    const pid = ctx.loginUser._id;
+    const userInfo = ctx.provingToken(ctx.request);
+    if (!userInfo) return;
+    const pid = userInfo._id;
     let info = null;
     try {
         info = validateUserInfo(body, ctx);
@@ -198,6 +202,8 @@ const createUser = async (ctx) => {
 const editUser = async (ctx) => {
     const body = ctx.request.body;
     try {
+        const userInfo = ctx.provingToken(ctx.request);
+        if (!userInfo) return;
         const info = validateUserInfo(body, ctx);
         await update(info);
         ctx.body = ctx.successSend({}, '修改用户成功');
@@ -213,6 +219,8 @@ const editUser = async (ctx) => {
  */
 const fetchUserInfo = async (ctx) => {
     try {
+        const userInfo = ctx.provingToken(ctx.request);
+        if (!userInfo) return;
         const condition = genFindOne(ctx.query);
         const user = await findOne(condition);
         if (user) {
@@ -231,6 +239,8 @@ const fetchUserInfo = async (ctx) => {
  */
 const delUser = async (ctx) => {
     try {
+        const userInfo = ctx.provingToken(ctx.request);
+        if (!userInfo) return;
         const { _id } = ctx.request.body;
         if (!_id) {
             ctx.body = ctx.failSend(-100008);

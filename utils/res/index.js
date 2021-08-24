@@ -16,6 +16,9 @@ function failSend(code = -500, data) {
         msg: errStatus[code] || '',
         data,
     }
+    if (code <= -400) {
+        this.response.status = code;
+    }
     this.response.body = res;
     return res;
 }
