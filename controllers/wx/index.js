@@ -2,7 +2,7 @@ const config = require('config-lite')(__dirname);
 import sha1 from 'crypto-js/sha1';
 
 export const checkSignature = (query) =>{
-  const {signature, timestamp, nonce} = query;
+  const {signature, timestamp, nonce, echostr} = query;
   console.log(query)
   const token = config.wxToken;
   const tmpArr = [token, timestamp, nonce].sort();
@@ -12,6 +12,6 @@ export const checkSignature = (query) =>{
   const hashCode = sha1(tempStr); //创建加密类型
   console.log('源数据', signature)
   console.log('加密数据', hashCode)
-  return signature;
+  return echostr;
     
 }
